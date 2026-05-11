@@ -260,7 +260,7 @@ class FormElementKeywords(LibraryComponent):
         Please notice that Robot Framework logs all arguments using
         the TRACE level. When not using the ``Secret`` type, tests must
         not be executed using level below DEBUG if the password should
-        not be logged in any format.``
+        not be logged in any format.
 
         This keyword supports Robot Framework 7.4
         [https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#secret-variables|Secret]
@@ -286,8 +286,9 @@ class FormElementKeywords(LibraryComponent):
         This keyword supports Robot Framework 7.4
         [https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#secret-variables|Secret]
         variable type. When a ``Secret`` is passed, the value is masked in
-        Robot Framework logs. Note that unlike `Input Password`, Selenium's
-        internal logs are not suppressed during typing.
+        Robot Framework logs and Selenium's internal logs are suppressed during
+        typing. When a plain string is passed, Selenium's internal logs are not
+        suppressed.
 
         If [https://github.com/SeleniumHQ/selenium/wiki/Grid2|Selenium Grid]
         is used and the ``text`` argument points to a file in the file system,
@@ -304,7 +305,9 @@ class FormElementKeywords(LibraryComponent):
         argument are new in SeleniumLibrary 4.0
         """
         self.info(f"Typing text '{text}' into text field '{locator}'.")
-        self._input_text_into_text_field(locator, text, clear)
+        self._input_text_into_text_field(
+            locator, text, clear, disable_log=isinstance(text, Secret)
+        )
 
     @keyword
     def page_should_contain_textfield(
